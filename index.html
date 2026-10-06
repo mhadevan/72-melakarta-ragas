@@ -1,0 +1,855 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#70294c">
+<meta name="description" content="72 Melakarta Ragas — beautiful, mobile-friendly Carnatic music search reference">
+<title>72 Melakarta Ragas — GitHub Edition</title>
+<style>
+:root{
+  --ink:#27232b;
+  --muted:#706873;
+  --paper:#fffdf9;
+  --cream:#f7f1e8;
+  --navy:#18324f;
+  --plum:#70294c;
+  --rose:#a23e61;
+  --coral:#e77c55;
+  --gold:#d6aa4d;
+  --teal:#237a72;
+  --mint:#e5f4ee;
+  --lav:#eee4f6;
+  --line:#e1d5c7;
+  --shadow:0 12px 32px rgba(55,38,30,.09);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 4%,rgba(231,124,85,.10),transparent 25%),
+    radial-gradient(circle at 92% 10%,rgba(112,41,76,.10),transparent 27%),
+    var(--cream);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.5;
+}
+header{
+  color:#fff;text-align:center;position:relative;overflow:hidden;
+  padding:42px 18px 38px;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(255,215,139,.16),transparent 22%),
+    linear-gradient(125deg,#153553 0%,#304a69 27%,#633052 62%,#9b3f5f 82%,#e77c55 100%);
+}
+header:before{
+  content:"";position:absolute;inset:0;opacity:.13;
+  background-image:radial-gradient(#fff 1px,transparent 1px);
+  background-size:20px 20px;
+}
+.music-mark{
+  position:absolute;right:4%;bottom:-22px;font:70px Georgia,serif;
+  color:#ffd98a;opacity:.18;letter-spacing:10px;white-space:nowrap;
+}
+header .inner{position:relative;max-width:1050px;margin:auto}
+.eyebrow{
+  display:inline-block;padding:6px 11px;border:1px solid rgba(255,255,255,.25);
+  border-radius:999px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  background:rgba(255,255,255,.09);backdrop-filter:blur(6px)
+}
+h1{
+  margin:12px 0 6px;font:700 clamp(34px,7vw,56px)/1.05 Georgia,serif;
+  letter-spacing:-.02em;text-shadow:0 4px 18px rgba(0,0,0,.22)
+}
+.subtitle{margin:0 auto;max-width:760px;color:rgba(255,255,255,.9);font-size:15px}
+.container{max-width:1100px;margin:auto;padding:20px 16px 48px}
+.search-panel{
+  position:sticky;top:10px;z-index:20;
+  max-width:820px;margin:-34px auto 26px;padding:16px;
+  border:1px solid rgba(255,255,255,.7);border-radius:20px;
+  background:rgba(255,253,249,.96);box-shadow:0 16px 38px rgba(48,31,29,.14);
+  backdrop-filter:blur(12px);
+}
+.search-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}
+.search-title strong{font-size:17px;color:var(--plum)}
+.search-title span{font-size:12px;color:var(--muted)}
+.search-wrap{position:relative}
+#ragaSearch{
+  width:100%;height:54px;padding:0 52px 0 18px;
+  border:2px solid #d9cbb9;border-radius:15px;
+  background:#fff;color:var(--ink);font:500 17px system-ui;
+  -webkit-appearance:none;appearance:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+#ragaSearch:focus{
+  outline:none;border-color:var(--coral);
+  box-shadow:0 0 0 4px rgba(231,124,85,.13),0 6px 18px rgba(48,31,29,.07)
+}
+.clear{
+  display:none;position:absolute;right:9px;top:9px;width:36px;height:36px;
+  border:0;border-radius:50%;background:#f0e8df;color:#635963;
+  font-size:22px;cursor:pointer
+}
+.search-meta{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:9px}
+#count{font-size:12px;font-weight:800;color:var(--plum)}
+.tip{font-size:12px;color:var(--muted)}
+.no-results{
+  display:none;max-width:700px;margin:20px auto;padding:30px;
+  border:1px dashed #ccbda9;border-radius:18px;background:#fffaf3;text-align:center
+}
+.no-results strong{display:block;color:var(--plum);font:700 22px Georgia,serif;margin-bottom:5px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:28px 0 12px}
+.section-head h2{margin:0;color:var(--plum);font:700 30px Georgia,serif}
+.section-head p{margin:0;color:var(--muted);font-size:12px}
+.raga-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.raga-card{
+  background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--teal);
+  border-radius:17px;overflow:hidden;box-shadow:var(--shadow);
+  transition:transform .16s ease,box-shadow .16s ease
+}
+.raga-card.prati{border-left-color:#9061a9}
+.raga-card:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(55,38,30,.13)}
+.card-top{
+  display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:10px;
+  padding:13px 14px;background:linear-gradient(135deg,#fffaf2,#f7edf5)
+}
+.raga-number{
+  width:35px;height:35px;border-radius:50%;display:grid;place-items:center;
+  color:#fff;background:linear-gradient(135deg,var(--navy),var(--plum));font-weight:850
+}
+.card-top h3{margin:0;color:var(--plum);font:700 19px Georgia,serif}
+.madhyama-pill{
+  padding:6px 9px;border-radius:999px;background:var(--mint);color:#216d64;
+  font-size:11px;font-weight:850;white-space:nowrap
+}
+.madhyama-pill.prati{background:var(--lav);color:#704478}
+.card-row{
+  display:grid;grid-template-columns:92px 1fr;gap:10px;padding:9px 13px;
+  border-top:1px solid #eee6da;font-size:13px
+}
+.card-row>span{font-size:11px;font-weight:850;color:var(--muted);padding-top:2px}
+.scale-text{font:600 14px Georgia,serif;color:var(--navy)}
+.stars{color:#cc8b20;letter-spacing:1px}
+footer{max-width:900px;margin:30px auto 0;color:var(--muted);font-size:12px}
+footer strong{color:var(--ink)}
+@media(max-width:760px){
+  header{padding:32px 14px 30px}
+  .container{padding:10px 10px 38px}
+  .search-panel{top:6px;margin:-24px 4px 20px;padding:13px}
+  .search-title span{display:none}
+  .tip{display:none}
+  .raga-list{grid-template-columns:1fr;gap:12px}
+  .card-top{grid-template-columns:38px 1fr}
+  .madhyama-pill{grid-column:2;justify-self:start;margin-top:-2px}
+  .card-row{grid-template-columns:82px 1fr}
+  .section-head h2{font-size:25px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}.raga-card{transition:none}
+}
+
+.video-section{margin-top:14px;padding-top:13px;border-top:1px dashed rgba(112,41,76,.18)}
+.video-heading{font-weight:900;color:#70294c;margin-bottom:8px}
+.video-heading .sort-note{font-size:.74rem;font-weight:700;color:#81777e}
+.video-links{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.video-link{display:block;width:100%;box-sizing:border-box;padding:9px 11px;border-radius:12px;
+background:linear-gradient(135deg,#fff1f5,#fff9ef);border:1px solid #efd2d7;color:#7d2948;
+text-decoration:none;font-weight:850;line-height:1.3;transition:.15s ease}
+.video-link:hover{background:#ffe7ed;transform:translateY(-1px)}
+.video-meta{display:block;margin-top:3px;font-size:.74rem;font-weight:650;color:#81777e}
+.video-note{color:#81777e;font-size:.82rem;line-height:1.35}
+.launch-note{max-width:1100px;margin:18px auto 0;padding:0 16px 28px}
+</style>
+</head>
+<body>
+<header>
+  <div class="music-mark">♫ ♪ ♬</div>
+  <div class="inner">
+    <span class="eyebrow">Carnatic Music • Learning Reference</span>
+    <h1>72 Melakarta Ragas</h1>
+    <p class="subtitle">Type a raga name to instantly find its scale, Madhyama, learning stage, kritis, difficulty and identification clues. &nbsp;🎥 <strong>Sample videos by Guru Vaidyanathan &amp; SV Family</strong></p>
+  </div>
+</header>
+
+<main class="container">
+  <section class="search-panel" aria-label="Raga search">
+    <div class="search-title">
+      <strong>🔎 Find a Raga</strong>
+      <span>Search by name or common spelling</span>
+    </div>
+    <div class="search-wrap">
+      <input id="ragaSearch" type="search" inputmode="search"
+             autocomplete="off" autocapitalize="none" spellcheck="false"
+             placeholder="Try: Sankara, Kalyani, Todi, Keeravani…"
+             aria-label="Type a raga name">
+      <button class="clear" id="clearSearch" type="button" aria-label="Clear search">×</button>
+    </div>
+    <div class="search-meta">
+      <span id="count">72 ragas</span>
+      <span class="tip">No Sanskrit marks needed</span>
+    </div>
+  </section>
+
+  <div class="section-head">
+    <div><h2>Raga Guide</h2><p>72 Melakarta parent ragas</p></div>
+  </div>
+
+  <div class="no-results" id="noResults">
+    <strong>No matching raga</strong>
+    <span>Try a shorter spelling, such as <b>Sankara</b> or <b>Kalyani</b>.</span>
+  </div>
+
+  <section class="raga-list" id="ragaList">
+    <article class="raga-card suddha" data-search="1kanakangisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritiskanakangipahimamcrangiahkanakangimbalamuralikrishnadifficultyidentifyveryrarehearthergdncolour" data-search="1kanakangisarigamapadanisasuddhamadhyamamaadvancedkanakangipahimamcrangiahkanakangimbalamuralikrishnaveryrarehearthergdncolour">
+<div class="card-top"><span class="raga-number">1</span><h3>Kanakāngi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₁ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Kanakāngi Pāhimām — C. Rangiah; Kanakāngi — M. Balamuralikrishna</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Very rare; hear the R₁-G₁-D₁-N₁ colour</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="2ratnangisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritiscintayamiratnangimcrangiahcompositionsofbalamuralikrishnadifficultyidentifyrgwithn" data-search="2ratnangisarigamapadanisasuddhamadhyamamaadvancedcintayamiratnangimcrangiahcompositionsofbalamuralikrishnargwithn">
+<div class="card-top"><span class="raga-number">2</span><h3>Ratnāngi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₁ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Cintayāmi Ratnāṅgīm — C. Rangiah; compositions of Balamuralikrishna</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₁ with N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="3ganamoortisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisganamurtivimalakirticrangiahcompositionsofbalamuralikrishnadifficultyidentifyveryrarengivesastrikingcontrast" data-search="3ganamoortisarigamapadanisasuddhamadhyamamaadvancedganamurtivimalakirticrangiahcompositionsofbalamuralikrishnaveryrarengivesastrikingcontrast">
+<div class="card-top"><span class="raga-number">3</span><h3>Gānamoorti</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₁ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Gānamūrti Vimala Kīrti — C. Rangiah; compositions of Balamuralikrishna</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Very rare; N₃ gives a striking contrast</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="4vanaspathisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifyrgdn" data-search="4vanaspathisarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsrgdn">
+<div class="card-top"><span class="raga-number">4</span><h3>Vanaspathi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₁ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₁ + D₂-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="5manavathisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifyrgdn" data-search="5manavathisarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsrgdn">
+<div class="card-top"><span class="raga-number">5</span><h3>Mānāvathi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₁ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₁ + D₂-N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="6tanaroopisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifydnisdistinctive" data-search="6tanaroopisarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsdnisdistinctive">
+<div class="card-top"><span class="raga-number">6</span><h3>Tānaroopi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₁ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>D₃-N₃ is distinctive</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="7senavathisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifyrgdn" data-search="7senavathisarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsrgdn">
+<div class="card-top"><span class="raga-number">7</span><h3>Senāvathi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₁ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₂ + D₁-N₁</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="8hanumatodisuddhamadhyamamascalesarigamapadanisalearnwhenintermediatekritiskaddanuvarikityagarajadasarathetyagarajarajuvedalatyagarajadifficultyidentifystrongrganddnwithgamaka" data-search="8hanumatodisarigamapadanisasuddhamadhyamamaintermediatekaddanuvarikityagarajadasarathetyagarajarajuvedalatyagarajastrongrganddnwithgamaka">
+<div class="card-top"><span class="raga-number">8</span><h3>Hanumatōdi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₁ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Kaddanu Vāriki — Tyagaraja; Dāśarathe — Tyagaraja; Rāju Vedala — Tyagaraja</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Strong R₁-G₂ and D₁-N₂, with gamaka</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=Ctxp107DKSg" target="_blank" rel="noopener noreferrer">🎥 Watch : Rajuvedala<span class="video-meta">17:15 · Event: 2022-07-16 · Uploaded: 2022-11-11 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=HvZMJRVUs9g" target="_blank" rel="noopener noreferrer">🎥 Watch : Sri Venkatesam<span class="video-meta">22:45 · Uploaded: 2022-11-23 · Vaidyanathan, Advaith</span></a></div></div></article>
+<article class="raga-card suddha" data-search="9dhenukasuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifygdn" data-search="9dhenukasarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsgdn">
+<div class="card-top"><span class="raga-number">9</span><h3>Dhenukā</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₁ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₂ + D₁ + N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="10natakapriyasuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifyrgdn" data-search="10natakapriyasarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsrgdn">
+<div class="card-top"><span class="raga-number">10</span><h3>Nāṭakapriyā</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₁ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₂ + D₂-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="11kokilapriyasuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifygwithbrightn" data-search="11kokilapriyasarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsgwithbrightn">
+<div class="card-top"><span class="raga-number">11</span><h3>Kōkilapriyā</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₁ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₂ with bright N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="12rupavathisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritiskamitaphaladayakicrangiahdifficultyidentifydncombination" data-search="12rupavathisarigamapadanisasuddhamadhyamamaadvancedkamitaphaladayakicrangiahdncombination">
+<div class="card-top"><span class="raga-number">12</span><h3>Rūpavathi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₁ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Kāmita Phaladāyaki — C. Rangiah</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>D₃-N₃ combination</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="13gayakapriyasuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifygwithverylowrd" data-search="13gayakapriyasarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsgwithverylowrd">
+<div class="card-top"><span class="raga-number">13</span><h3>Gāyakapriyā</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₁ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₃ with very low R₁/D₁</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="14vakulabharanamsuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifyrgistheunusualcolour" data-search="14vakulabharanamsarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsrgistheunusualcolour">
+<div class="card-top"><span class="raga-number">14</span><h3>Vakuḷābharaṇaṃ</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₁ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₃ is the unusual colour</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="15mayamalavagaulasuddhamadhyamamascalesarigamapadanisalearnwhenbeginnerfoundationkritisdevadevakalayamiswatitirunalmerusamanatyagarajasrinathadiguruguhodikshitardifficultyidentifyrganddnclassicbeginnerscale" data-search="15mayamalavagaulasarigamapadanisasuddhamadhyamamabeginnerfoundationdevadevakalayamiswatitirunalmerusamanatyagarajasrinathadiguruguhodikshitarrganddnclassicbeginnerscale">
+<div class="card-top"><span class="raga-number">15</span><h3>Māyāmāḷavagauḷa</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₁ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Beginner foundation</strong></div>
+<div class="card-row"><span>Kritis</span><div>Deva Deva Kalayāmi — Swati Tirunal; Meru Samāna — Tyagaraja; Śrī Nāthādi Guruguho — Dikshitar</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₃ and D₁-N₃; classic beginner scale</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=skypjO0OpgA" target="_blank" rel="noopener noreferrer">🎥 Watch : MERUSAMANA-MAYAMALAVAGOULA-ADI-SRI THYAGARAJA<span class="video-meta">15:01 · Uploaded: 2021-01-12 · Vaidyanathan, Jiothi, Ramya</span></a></div></div></article>
+<article class="raga-card suddha" data-search="16chakravakamsuddhamadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativemelacompositionsdifficultyidentifyrgdn" data-search="16chakravakamsarigamapadanisasuddhamadhyamamaintermediaterepresentativemelacompositionsrgdn">
+<div class="card-top"><span class="raga-number">16</span><h3>Chakravākaṃ</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₁ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₃ + D₂-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=1z2eNqSO5Lc" target="_blank" rel="noopener noreferrer">🎥 Watch : Sarojanabha<span class="video-meta">8:09 · Event: 2024-07-27 · Uploaded: 2025-01-14 · Jiothi, Jayanthi</span></a></div></div></article>
+<article class="raga-card suddha" data-search="17suryakantamsuddhamadhyamamascalesarigamapadanisalearnwhenintermediatekritisbhajamisrichayapatimcrangiahdifficultyidentifyrgbrightn" data-search="17suryakantamsarigamapadanisasuddhamadhyamamaintermediatebhajamisrichayapatimcrangiahrgbrightn">
+<div class="card-top"><span class="raga-number">17</span><h3>Sūryakāntaṃ</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₁ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Bhajami Śrī Chāyāpatim — C. Rangiah</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₃ + bright N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="18hatakambarisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifydn" data-search="18hatakambarisarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsdn">
+<div class="card-top"><span class="raga-number">18</span><h3>Hāṭakāmbari</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₁ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>D₃-N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="19jhankaradhvanisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisjhankaradhvaniragacrangiahdifficultyidentifyrgbutverylowdn" data-search="19jhankaradhvanisarigamapadanisasuddhamadhyamamaadvancedjhankaradhvaniragacrangiahrgbutverylowdn">
+<div class="card-top"><span class="raga-number">19</span><h3>Jhankāradhvani</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₁ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Jhankāradhvani Rāgā — C. Rangiah</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₂-G₂ but very low D₁-N₁</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="20natabhairavisuddhamadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativemelacompositionsdifficultyidentifygdngivesdarkersound" data-search="20natabhairavisarigamapadanisasuddhamadhyamamaintermediaterepresentativemelacompositionsgdngivesdarkersound">
+<div class="card-top"><span class="raga-number">20</span><h3>Naṭabhairavi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₁ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₂ + D₁ + N₂ gives darker sound</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="21kiravanisuddhamadhyamamascalesarigamapadanisalearnwhenbeginnerintermediatekritiskaligiyuntetyagarajaambavanimuthiahbhagavatardifficultyidentifygdnhauntingminorlikecolour" data-search="21kiravanisarigamapadanisasuddhamadhyamamabeginnerintermediatekaligiyuntetyagarajaambavanimuthiahbhagavatargdnhauntingminorlikecolour">
+<div class="card-top"><span class="raga-number">21</span><h3>Kīravāṇi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₁ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Beginner–Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Kaligiyuntē — Tyagaraja; Ambāvani — Muthiah Bhagavatar</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₂ + D₁ + N₃; haunting/minor-like colour</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="22kharaharapriyasuddhamadhyamamascalesarigamapadanisalearnwhenbeginnerintermediatekritischakkanirajatyagarajaramanisamanemevarutyagarajapakkalanilabadityagarajadifficultyidentifyrganddnveryexpressive" data-search="22kharaharapriyasarigamapadanisasuddhamadhyamamabeginnerintermediatechakkanirajatyagarajaramanisamanemevarutyagarajapakkalanilabadityagarajarganddnveryexpressive">
+<div class="card-top"><span class="raga-number">22</span><h3>Kharaharapriyā</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₁ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Beginner–Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Chakkani Rāja — Tyagaraja; Rāma Nī Samānemevaru — Tyagaraja; Pakkala Nilabadi — Tyagaraja</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₂-G₂ and D₂-N₂; very expressive</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=4CKwbcQkhto" target="_blank" rel="noopener noreferrer">🎥 Watch : Chakkani Raaja Maargame<span class="video-meta">1:11:53 · Event: 2024-07-27 · Uploaded: 2026-02-27 · Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=rpgzSYNBpWk" target="_blank" rel="noopener noreferrer">🎥 Watch : Rama Nee Samaanamevaru<span class="video-meta">22:30 · Event: 2025-10-12 · Uploaded: 2026-03-14 · Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=ZGzcYGGSnso" target="_blank" rel="noopener noreferrer">🎥 Watch : Chakkani Raajamaargame<span class="video-meta">49:52 · Uploaded: 2022-10-13 · Vaidyanathan, Jiothi, Ramya</span></a></div></div></article>
+<article class="raga-card suddha" data-search="23gaurimanoharisuddhamadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativemelacompositionsdifficultyidentifygwithn" data-search="23gaurimanoharisarigamapadanisasuddhamadhyamamaintermediaterepresentativemelacompositionsgwithn">
+<div class="card-top"><span class="raga-number">23</span><h3>Gaurīmanōhari</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₁ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₂ with N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=bvF9SLhLMsY" target="_blank" rel="noopener noreferrer">🎥 Watch : Guruleka<span class="video-meta">4:18 · Event: 2022-04-15 · Uploaded: 2022-04-18</span></a><a class="video-link" href="https://www.youtube.com/watch?v=7s3Di6m4_pY" target="_blank" rel="noopener noreferrer">🎥 Watch : Guruleka Etuvanti<span class="video-meta">4:17 · Event: 2026-01-26 · Uploaded: 2026-05-22</span></a><a class="video-link" href="https://www.youtube.com/watch?v=1RoBcN_CcB8" target="_blank" rel="noopener noreferrer">🎥 Watch : Guruleka Etuvanti<span class="video-meta">3:40 · Uploaded: 2024-05-12</span></a><a class="video-link" href="https://www.youtube.com/watch?v=PKje2Z2bWT4" target="_blank" rel="noopener noreferrer">🎥 Watch : Gurulekha<span class="video-meta">4:13 · Uploaded: 2025-03-27</span></a></div></div></article>
+<article class="raga-card suddha" data-search="24varunapriyasuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifydngivesasharpuppercolour" data-search="24varunapriyasarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsdngivesasharpuppercolour">
+<div class="card-top"><span class="raga-number">24</span><h3>Varuṇapriyā</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₁ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>D₃-N₃ gives a sharp upper colour</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="25mararanjanisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifygwithverylowdn" data-search="25mararanjanisarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsgwithverylowdn">
+<div class="card-top"><span class="raga-number">25</span><h3>Māraranjani</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₁ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₃ with very low D₁-N₁</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="26charukesisuddhamadhyamamascalesarigamapadanisalearnwhenbeginnerintermediatekritisadamodigaladetyagarajakripayapalayaswatitirunalbalakrsnambhajehamcrangiahdifficultyidentifymajorlikelowerhalfdn" data-search="26charukesisarigamapadanisasuddhamadhyamamabeginnerintermediateadamodigaladetyagarajakripayapalayaswatitirunalbalakrsnambhajehamcrangiahmajorlikelowerhalfdn">
+<div class="card-top"><span class="raga-number">26</span><h3>Chārukēśi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₁ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Beginner–Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Adamōdi Galadē — Tyagaraja; Kripayā Pālaya — Swati Tirunal; Bālakṛṣṇaṃ Bhajēham — C. Rangiah</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Major-like lower half + D₁-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="27sarasangisuddhamadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativemelacompositionsdifficultyidentifygdn" data-search="27sarasangisarigamapadanisasuddhamadhyamamaintermediaterepresentativemelacompositionsgdn">
+<div class="card-top"><span class="raga-number">27</span><h3>Sarasāngi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₁ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₃ + D₁ + N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="28harikambhojisuddhamadhyamamascalesarigamapadanisalearnwhenbeginnerkritisentukupeddalatyagarajamanavyalatyagarajarepresentativerepertoiredifficultyidentifyrgmpdnfamiliarmajorfamilysound" data-search="28harikambhojisarigamapadanisasuddhamadhyamamabeginnerentukupeddalatyagarajamanavyalatyagarajarepresentativerepertoirergmpdnfamiliarmajorfamilysound">
+<div class="card-top"><span class="raga-number">28</span><h3>Harikāmbhōji</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₁ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Beginner</strong></div>
+<div class="card-row"><span>Kritis</span><div>Entuku Peddala — Tyagaraja; Mānavyāla — Tyagaraja; representative repertoire</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₂-G₃-M₁-P-D₂-N₂; familiar major-family sound</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=rbmSgB7G9s4" target="_blank" rel="noopener noreferrer">🎥 Watch : Undedhi Raamudokkadu<span class="video-meta">12:17 · Uploaded: 2022-11-25 · Vaidyanathan, Advaith</span></a><a class="video-link" href="https://www.youtube.com/watch?v=OYiyTM_UZN0" target="_blank" rel="noopener noreferrer">🎥 Watch : Rama Nannu Brova<span class="video-meta">11:27 · Uploaded: 2025-05-26 · Vaidyanathan, Jiothi, Jayanthi</span></a></div></div></article>
+<article class="raga-card suddha" data-search="29sankarabharanamsuddhamadhyamamascalesarigamapadanisalearnwhenveryearlykritisendaromahanubhavulutyagarajasvararagasudhatyagarajaaksayalingavibhodikshitardifficultyidentifycompletemajorscalesoundall7naturalswaras" data-search="29sankarabharanamsarigamapadanisasuddhamadhyamamaveryearlyendaromahanubhavulutyagarajasvararagasudhatyagarajaaksayalingavibhodikshitarcompletemajorscalesoundall7naturalswaras">
+<div class="card-top"><span class="raga-number">29</span><h3>Śaṅkarābharaṇaṃ</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₁ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Very early</strong></div>
+<div class="card-row"><span>Kritis</span><div>Endarō Mahānubhāvulu — Tyagaraja; Svara Rāga Sudhā — Tyagaraja; Akṣayaliṅga Vibhō — Dikshitar</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Complete major-scale sound; all 7 natural swaras</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=0dMEFX0rHhw" target="_blank" rel="noopener noreferrer">🎥 Watch : Sarojadalanethri<span class="video-meta">8:02 · Event: 2019-06-19 · Uploaded: 2022-06-23</span></a><a class="video-link" href="https://www.youtube.com/watch?v=L7Q3klMW-WI" target="_blank" rel="noopener noreferrer">🎥 Watch : Akshayalingavibho<span class="video-meta">1:15:12 · Event: 2022-07-16 · Uploaded: 2022-11-11 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=x8vRWmHHgMs" target="_blank" rel="noopener noreferrer">🎥 Watch : Akshayalinga Vibho<span class="video-meta">44:56 · Uploaded: 2021-02-23 · Vaidyanathan, Jayanthi, Ramya</span></a><a class="video-link" href="https://www.youtube.com/watch?v=WJQ840z8T_0" target="_blank" rel="noopener noreferrer">🎥 Watch : Nannukaruninchi Brovave<span class="video-meta">9:18 · Uploaded: 2022-09-28 · Vaidyanathan, Jayanthi, Ramya</span></a><a class="video-link" href="https://www.youtube.com/watch?v=v1rCJyj3ub0" target="_blank" rel="noopener noreferrer">🎥 Watch : Manasu Swaadhinamaina<span class="video-meta">58:55 · Uploaded: 2022-11-04 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=DRE8h8stVwc" target="_blank" rel="noopener noreferrer">🎥 Watch : Kaadimodi Vaadaadum Thirupugazh<span class="video-meta">5:42 · Uploaded: 2022-11-07 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=GHEnwjw-puM" target="_blank" rel="noopener noreferrer">🎥 Watch : Thirupugazh &quot;Kaadimodi Vaadaadum<span class="video-meta">2:25 · Uploaded: 2024-07-08 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=DD28EqHKlM0" target="_blank" rel="noopener noreferrer">🎥 Watch : Manasu Swadhina<span class="video-meta">49:21 · Uploaded: 2025-01-17 · Vaidyanathan, Jayanthi, Advaith</span></a><a class="video-link" href="https://www.youtube.com/watch?v=ta9n9foMKo0" target="_blank" rel="noopener noreferrer">🎥 Watch : Manasuswadhinamaina<span class="video-meta">10:20 · Uploaded: 2025-03-25 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=oAFiU_8--Yc" target="_blank" rel="noopener noreferrer">🎥 Watch : Manasu Swaadheenamaina<span class="video-meta">47:19 · Uploaded: 2026-07-03 · Vaidyanathan, Jiothi, Jayanthi</span></a></div></div></article>
+<article class="raga-card suddha" data-search="30nagapriyasuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifydn" data-search="30nagapriyasarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsdn">
+<div class="card-top"><span class="raga-number">30</span><h3>Nāgapriyā</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₁ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>D₃-N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="31yagapriyasuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifyrimmediatelymakesitunusual" data-search="31yagapriyasarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsrimmediatelymakesitunusual">
+<div class="card-top"><span class="raga-number">31</span><h3>Yāgapriyā</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₁ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃ immediately makes it unusual</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="32ragavardhinisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifyrgdn" data-search="32ragavardhinisarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsrgdn">
+<div class="card-top"><span class="raga-number">32</span><h3>Rāgavardhini</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₁ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃-G₃ + D₁-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="33gangeyabhusanisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifyrgn" data-search="33gangeyabhusanisarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsrgn">
+<div class="card-top"><span class="raga-number">33</span><h3>Gangēyabhūṣaṇi</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₁ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃ + G₃ + N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="34vagadhisvarisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifyrgdn" data-search="34vagadhisvarisarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsrgdn">
+<div class="card-top"><span class="raga-number">34</span><h3>Vāgadhīśvari</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₁ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃-G₃ + D₂-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="35sulinisuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativemelacompositionsdifficultyidentifyrdn" data-search="35sulinisarigamapadanisasuddhamadhyamamaadvancedrepresentativemelacompositionsrdn">
+<div class="card-top"><span class="raga-number">35</span><h3>Śūlinī</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₁ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative mela compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃ + D₂-N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card suddha" data-search="36chalanatasuddhamadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifystrongrganddn" data-search="36chalanatasarigamapadanisasuddhamadhyamamaadvancedrepresentativecompositionsstrongrganddn">
+<div class="card-top"><span class="raga-number">36</span><h3>Chalanāṭa</h3><span class="madhyama-pill suddha">Śuddha-Madhyama (Ma₁)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₁ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Strong R₃-G₃ and D₃-N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="37salagampratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifyrgma" data-search="37salagamsarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsrgma">
+<div class="card-top"><span class="raga-number">37</span><h3>Sālagam</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₂ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₁ + Ma₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="38jalarnavapratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifymarg" data-search="38jalarnavasarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsmarg">
+<div class="card-top"><span class="raga-number">38</span><h3>Jalārṇava</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₂ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + R₁-G₁</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="39jhalavaralipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifymadn" data-search="39jhalavaralisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsmadn">
+<div class="card-top"><span class="raga-number">39</span><h3>Jhālavarāli</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₂ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + D₁-N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="40navanitampratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifyrgma" data-search="40navanitamsarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsrgma">
+<div class="card-top"><span class="raga-number">40</span><h3>Navanītaṃ</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₂ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₁ + Ma₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="41pavanipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifymabrightn" data-search="41pavanisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsmabrightn">
+<div class="card-top"><span class="raga-number">41</span><h3>Pāvani</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₂ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + bright N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="42raghupriyapratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifydnwithma" data-search="42raghupriyasarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsdnwithma">
+<div class="card-top"><span class="raga-number">42</span><h3>Raghupriyā</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₁ Ma₂ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>D₃-N₃ with Ma₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="43gavambhodhipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifygmalown" data-search="43gavambhodhisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsgmalown">
+<div class="card-top"><span class="raga-number">43</span><h3>Gavāmbhōdhi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₂ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₂ + Ma₂ + low N₁</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="44bhavapriyapratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifygman" data-search="44bhavapriyasarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsgman">
+<div class="card-top"><span class="raga-number">44</span><h3>Bhavapriyā</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₂ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₂ + Ma₂ + N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="45subhapantuvaralipratimadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativecompositionsdifficultyidentifyrgmdnintensesound" data-search="45subhapantuvaralisarigamapadanisapratimadhyamamaintermediaterepresentativecompositionsrgmdnintensesound">
+<div class="card-top"><span class="raga-number">45</span><h3>Śubhapantuvarāḷi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₂ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₁-G₂-M₂-D₁-N₃; intense sound</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=rwnAPP0yd_8" target="_blank" rel="noopener noreferrer">🎥 Watch : Sri Sathyanarayanam<span class="video-meta">25:09 · Event: 2024-07-27 · Uploaded: 2025-01-16 · Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=kc27n2MCB3k" target="_blank" rel="noopener noreferrer">🎥 Watch : Baaraiah Ranga<span class="video-meta">9:50 · Uploaded: 2025-05-22 · Vaidyanathan, Jiothi, Jayanthi</span></a></div></div></article>
+<article class="raga-card prati" data-search="46sadvidhamarganipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifymadn" data-search="46sadvidhamarganisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsmadn">
+<div class="card-top"><span class="raga-number">46</span><h3>Ṣaḍvidhamārgaṇi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₂ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + D₂-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="47suvarnangipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifygman" data-search="47suvarnangisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsgman">
+<div class="card-top"><span class="raga-number">47</span><h3>Suvarṇāngi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₂ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₂ + Ma₂ + N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="48divyamanipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifydn" data-search="48divyamanisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsdn">
+<div class="card-top"><span class="raga-number">48</span><h3>Divyamaṇi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₂ Ma₂ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>D₃-N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="49dhavalambaripratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifygman" data-search="49dhavalambarisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsgman">
+<div class="card-top"><span class="raga-number">49</span><h3>Dhavalāmbari</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₂ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₃ + Ma₂ + N₁</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="50namanarayanipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifymagn" data-search="50namanarayanisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsmagn">
+<div class="card-top"><span class="raga-number">50</span><h3>Nāmanārāyaṇi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₂ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + G₃ + N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="51kamavardhinipantuvaralipratimadhyamamascalesarigamapadanisalearnwhenintermediatekritisramaramagunasimaswatitirunalparipalayamamswatitirunalrepresentativerepertoiredifficultyidentifymadnpowerfulintense" data-search="51kamavardhinipantuvaralisarigamapadanisapratimadhyamamaintermediateramaramagunasimaswatitirunalparipalayamamswatitirunalrepresentativerepertoiremadnpowerfulintense">
+<div class="card-top"><span class="raga-number">51</span><h3>Kāmavardhini / Pantuvarāḷi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₂ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Rāma Rāma Guṇa Sīma — Swati Tirunal; Paripālayamām — Swati Tirunal; representative repertoire</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + D₁ + N₃; powerful/intense</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=11Cw0POIy8A" target="_blank" rel="noopener noreferrer">🎥 Watch : Enaganu Ramabhajana<span class="video-meta">6:13 · Event: 2019-06-19 · Uploaded: 2022-06-23</span></a><a class="video-link" href="https://www.youtube.com/watch?v=rwnAPP0yd_8" target="_blank" rel="noopener noreferrer">🎥 Watch : Sri Sathyanarayanam<span class="video-meta">25:09 · Event: 2024-07-27 · Uploaded: 2025-01-16 · Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=jtnOzgZk3xA" target="_blank" rel="noopener noreferrer">🎥 Watch : SAARASAAKSHA<span class="video-meta">19:34 · Uploaded: 2021-01-22 · Vaidyanathan, Jiothi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=Ku4gK8rx6as" target="_blank" rel="noopener noreferrer">🎥 Watch : Siva Siva Siva Enaraada<span class="video-meta">16:55 · Uploaded: 2022-09-21 · Vaidyanathan, Jayanthi, Ramya</span></a><a class="video-link" href="https://www.youtube.com/watch?v=MK62DMCwIYA" target="_blank" rel="noopener noreferrer">🎥 Watch : Ennaganu Raamabajana<span class="video-meta">19:19 · Uploaded: 2022-10-30 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=e76ywQq_lgo" target="_blank" rel="noopener noreferrer">🎥 Watch : Siva Siva Sivayenaradha<span class="video-meta">17:17 · Uploaded: 2022-11-23 · Vaidyanathan, Advaith</span></a><a class="video-link" href="https://www.youtube.com/watch?v=dt3YF99xcjk" target="_blank" rel="noopener noreferrer">🎥 Watch : Ennaganu Raamabhajana<span class="video-meta">10:51 · Uploaded: 2024-05-12 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=7se38joubpw" target="_blank" rel="noopener noreferrer">🎥 Watch : Raghuvara<span class="video-meta">16:37 · Uploaded: 2025-01-14 · Vaidyanathan, Jayanthi, Advaith</span></a><a class="video-link" href="https://www.youtube.com/watch?v=kc27n2MCB3k" target="_blank" rel="noopener noreferrer">🎥 Watch : Baaraiah Ranga<span class="video-meta">9:50 · Uploaded: 2025-05-22 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=d7K8_sXSWdo" target="_blank" rel="noopener noreferrer">🎥 Watch : Saarasaaksha<span class="video-meta">16:41 · Uploaded: 2025-05-26 · Vaidyanathan, Jiothi, Jayanthi</span></a></div></div></article>
+<article class="raga-card prati" data-search="52ramapriyapratimadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativecompositionsdifficultyidentifymagn" data-search="52ramapriyasarigamapadanisapratimadhyamamaintermediaterepresentativecompositionsmagn">
+<div class="card-top"><span class="raga-number">52</span><h3>Rāmapriyā</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₂ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + G₃ + N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="53gamanasramapratimadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativecompositionsdifficultyidentifymabrightn" data-search="53gamanasramasarigamapadanisapratimadhyamamaintermediaterepresentativecompositionsmabrightn">
+<div class="card-top"><span class="raga-number">53</span><h3>Gamanāśrama</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₂ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + bright N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="54visvambharipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifydnma" data-search="54visvambharisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsdnma">
+<div class="card-top"><span class="raga-number">54</span><h3>Viśvambhari</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₁ Ga₃ Ma₂ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>D₃-N₃ + Ma₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="55syamalangipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifyrgwithmaandlown" data-search="55syamalangisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsrgwithmaandlown">
+<div class="card-top"><span class="raga-number">55</span><h3>Śyāmalāngi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₂ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₂-G₂ with Ma₂ and low N₁</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="56sanmukhapriyapratimadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativecompositionsdifficultyidentifymagwithdn" data-search="56sanmukhapriyasarigamapadanisapratimadhyamamaintermediaterepresentativecompositionsmagwithdn">
+<div class="card-top"><span class="raga-number">56</span><h3>Ṣaṇmukhapriyā</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₂ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + G₂, with D₁-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=gunSVo_QlzI" target="_blank" rel="noopener noreferrer">🎥 Watch : Marivere Dikkevarayya, Shanmukhapriya<span class="video-meta">11:24 · Uploaded: 2018-12-16 · Vaidyanathan, Jiothi, Jayanthi</span></a></div></div></article>
+<article class="raga-card prati" data-search="57simhendramadhyamampratimadhyamamascalesarigamapadanisalearnwhenintermediatekritisnidumurtityagarajaragamtanampallavirepertoiredifficultyidentifygman" data-search="57simhendramadhyamamsarigamapadanisapratimadhyamamaintermediatenidumurtityagarajaragamtanampallavirepertoiregman">
+<div class="card-top"><span class="raga-number">57</span><h3>Siṃhēndramadhyamam</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₂ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Nīdu Mūrti — Tyagaraja; Rāgam-Tānam-Pallavi repertoire</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₂ + Ma₂ + N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="58hemavatipratimadhyamamascalesarigamapadanisalearnwhenintermediatekritissrikrsnambhajamanasadikshitarrepresentativecompositionsdifficultyidentifyrgmadn" data-search="58hemavatisarigamapadanisapratimadhyamamaintermediatesrikrsnambhajamanasadikshitarrepresentativecompositionsrgmadn">
+<div class="card-top"><span class="raga-number">58</span><h3>Hēmāvati</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₂ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Śrī Kṛṣṇaṃ Bhajamānasa — Dikshitar; representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₂-G₂ + Ma₂ + D₂-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="59dharmavatipratimadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativecompositionsdifficultyidentifygman" data-search="59dharmavatisarigamapadanisapratimadhyamamaintermediaterepresentativecompositionsgman">
+<div class="card-top"><span class="raga-number">59</span><h3>Dharmāvati</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₂ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₂ + Ma₂ + N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="60nitimatipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifydn" data-search="60nitimatisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsdn">
+<div class="card-top"><span class="raga-number">60</span><h3>Nītimati</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₂ Ma₂ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>D₃-N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="61kantamanipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifygmalown" data-search="61kantamanisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsgmalown">
+<div class="card-top"><span class="raga-number">61</span><h3>Kāntāmaṇi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₂ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>G₃ + Ma₂ + low N₁</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="62rsabhapriyapratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifymadn" data-search="62rsabhapriyasarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsmadn">
+<div class="card-top"><span class="raga-number">62</span><h3>R̥ṣabhapriyā</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₂ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + D₁-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="63lathangipratimadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativelathangicompositionsdifficultyidentifyrgmdn" data-search="63lathangisarigamapadanisapratimadhyamamaintermediaterepresentativelathangicompositionsrgmdn">
+<div class="card-top"><span class="raga-number">63</span><h3>Lathāngi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₂ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative Lathāngi compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₂-G₃-M₂-D₁-N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="64vachaspatipratimadhyamamascalesarigamapadanisalearnwhenintermediatekritisrepresentativecompositionsdifficultyidentifymagn" data-search="64vachaspatisarigamapadanisapratimadhyamamaintermediaterepresentativecompositionsmagn">
+<div class="card-top"><span class="raga-number">64</span><h3>Vāchaspati</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₂ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + G₃ + N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=koqOCnYjV9k" target="_blank" rel="noopener noreferrer">🎥 Watch : Parathpara<span class="video-meta">13:44 · Uploaded: 2022-11-08 · Vaidyanathan, Jiothi, Jayanthi</span></a></div></div></article>
+<article class="raga-card prati" data-search="65mechakalyanikalyanipratimadhyamamascalesarigamapadanisalearnwhenbeginnerintermediatekritisvasudevayanityagarajaetavunaratyagarajakamalambambhajaredikshitardifficultyidentifymaisthegiveawayluminouskalyanisound" data-search="65mechakalyanikalyanisarigamapadanisapratimadhyamamabeginnerintermediatevasudevayanityagarajaetavunaratyagarajakamalambambhajaredikshitarmaisthegiveawayluminouskalyanisound">
+<div class="card-top"><span class="raga-number">65</span><h3>Mēchakalyāṇi / Kalyāṇi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₂ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Beginner–Intermediate</strong></div>
+<div class="card-row"><span>Kritis</span><div>Vasudevayani — Tyagaraja; Etavunara — Tyagaraja; Kamalāmbām Bhajarē — Dikshitar</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐⭐⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ is the giveaway; luminous Kalyāṇi sound</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos <span class="sort-note">(oldest → newest)</span></div><div class="video-links"><a class="video-link" href="https://www.youtube.com/watch?v=9NVJbEBDF9Y" target="_blank" rel="noopener noreferrer">🎥 Watch : Vanajakshi<span class="video-meta">10:15 · Uploaded: 2022-09-14 · Vaidyanathan, Jayanthi, Ramya</span></a><a class="video-link" href="https://www.youtube.com/watch?v=pvf9qnzL1Zo" target="_blank" rel="noopener noreferrer">🎥 Watch : Ethaavunara<span class="video-meta">48:10 · Uploaded: 2022-11-25 · Vaidyanathan, Advaith</span></a><a class="video-link" href="https://www.youtube.com/watch?v=o5UquUJf1Vg" target="_blank" rel="noopener noreferrer">🎥 Watch : Bhajare Rechittha<span class="video-meta">14:32 · Uploaded: 2024-06-11 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=1lt4uX24q3I" target="_blank" rel="noopener noreferrer">🎥 Watch : Ethavunara<span class="video-meta">56:52 · Uploaded: 2024-07-08 · Vaidyanathan, Jiothi, Jayanthi</span></a><a class="video-link" href="https://www.youtube.com/watch?v=P31-gfv5P1Y" target="_blank" rel="noopener noreferrer">🎥 Watch : Yethaavunara<span class="video-meta">16:38 · Uploaded: 2025-03-25 · Vaidyanathan, Jayanthi, Advaith</span></a></div></div></article>
+<article class="raga-card prati" data-search="66chitrambaripratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifymadn" data-search="66chitrambarisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsmadn">
+<div class="card-top"><span class="raga-number">66</span><h3>Chitrāmbari</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₂ Ga₃ Ma₂ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>Ma₂ + D₃-N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="67sucharitrapratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifyrgma" data-search="67sucharitrasarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsrgma">
+<div class="card-top"><span class="raga-number">67</span><h3>Sucharitra</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₂ Pa Da₁ Ni₁ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃-G₃ + Ma₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="68jyotisvarupinijyotismatipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifyrman" data-search="68jyotisvarupinijyotismatisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsrman">
+<div class="card-top"><span class="raga-number">68</span><h3>Jyōtisvarūpiṇi / Jyōtiṣmati</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₂ Pa Da₁ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃ + Ma₂ + N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="69dhatuvardhanipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifyrgman" data-search="69dhatuvardhanisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsrgman">
+<div class="card-top"><span class="raga-number">69</span><h3>Dhātuvardhani</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₂ Pa Da₁ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃-G₃ + Ma₂ + N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="70nasikabhusanipratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifyrmadn" data-search="70nasikabhusanisarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsrmadn">
+<div class="card-top"><span class="raga-number">70</span><h3>Nāśikābhūṣaṇi</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₂ Pa Da₂ Ni₂ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃ + Ma₂ + D₂-N₂</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="71kosalampratimadhyamamascalesarigamapadanisalearnwhenadvancedkritisrepresentativecompositionsdifficultyidentifyrgmn" data-search="71kosalamsarigamapadanisapratimadhyamamaadvancedrepresentativecompositionsrgmn">
+<div class="card-top"><span class="raga-number">71</span><h3>Kōsalam</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₂ Pa Da₂ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃-G₃-M₂ + N₃</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+<article class="raga-card prati" data-search="72rasikapriyapratimadhyamamascalesarigamapadanisalearnwhenlastadvancedkritisrepresentativecompositionsrasikapriyacompositionsbybalamuralikrishnadifficultyidentifyrgmdnverybrighthighnotestructure" data-search="72rasikapriyasarigamapadanisapratimadhyamamalastadvancedrepresentativecompositionsrasikapriyacompositionsbybalamuralikrishnargmdnverybrighthighnotestructure">
+<div class="card-top"><span class="raga-number">72</span><h3>Rasikapriyā</h3><span class="madhyama-pill prati">Prati-Madhyama (Ma₂)</span></div>
+<div class="card-row"><span>Scale</span><strong class="scale-text">Sa Ri₃ Ga₃ Ma₂ Pa Da₃ Ni₃ Sa</strong></div>
+<div class="card-row"><span>Learn when</span><strong>Last / Advanced</strong></div>
+<div class="card-row"><span>Kritis</span><div>Representative compositions; Rasikapriyā compositions by Balamuralikrishna</div></div>
+<div class="card-row"><span>Difficulty</span><div class="stars">⭐</div></div>
+<div class="card-row"><span>Identify</span><div>R₃-G₃-M₂-D₃-N₃; very bright/high-note structure</div></div>
+<div class="video-section"><div class="video-heading">🎥 Videos</div><div class="video-note">No matching video found in the supplied channel scrape.</div></div></article>
+  </section>
+
+  <footer>
+    <p><strong>Madhyama:</strong> 1–36 use Śuddha Madhyama (Ma₁); 37–72 use Prati Madhyama (Ma₂).</p>
+    <p><strong>Learning note:</strong> A Melakarta scale identifies the parent scale, but a Carnatic raga is also recognized through its characteristic phrases, gamakas and prayogas.</p>
+    <p><strong>Notation:</strong> Ri = Rishabha · Ga = Gandhara · Ma = Madhyama · Pa = Panchama · Da = Dhaivata · Ni = Nishada.</p>
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var input=document.getElementById("ragaSearch");
+  var clear=document.getElementById("clearSearch");
+  var count=document.getElementById("count");
+  var none=document.getElementById("noResults");
+  var cards=document.querySelectorAll(".raga-card");
+
+  var aliases={
+    sankara:"sankarabharanam", sankarabharanam:"sankarabharanam",
+    shankara:"sankarabharanam", shankarabharanam:"sankarabharanam",
+    kalyani:"mechakalyani", todi:"hanumatodi",
+    keeravani:"keeravani", charukesi:"charukesi",
+    kharaharapriya:"kharaharapriya", harikambhoji:"harikambhoji",
+    mayamalavagowla:"mayamalavagowla", mayamalavagaula:"mayamalavagowla",
+    pantuvarali:"kamavardhini", kamavardhini:"kamavardhini"
+  };
+
+  function norm(s){
+    s=String(s||"").toLowerCase();
+    var r={
+      "ā":"a","á":"a","à":"a","ä":"a","â":"a","ã":"a",
+      "ī":"i","í":"i","ì":"i","ï":"i","î":"i",
+      "ū":"u","ú":"u","ù":"u","ü":"u","û":"u",
+      "ē":"e","é":"e","è":"e","ë":"e","ê":"e",
+      "ō":"o","ó":"o","ò":"o","ö":"o","ô":"o",
+      "ṃ":"m","ṁ":"m","ṇ":"n","ñ":"n","ṅ":"n",
+      "ś":"s","ṣ":"s","ṛ":"r","ṝ":"r","ṭ":"t","ḍ":"d",
+      "ḷ":"l","ḻ":"l","ḥ":"h"
+    };
+    Object.keys(r).forEach(function(k){s=s.split(k).join(r[k]);});
+    try{s=s.normalize("NFD").replace(/[\u0300-\u036f]/g,"");}catch(e){}
+    return s.replace(/[^a-z0-9]/g,"");
+  }
+
+  function filter(){
+    var raw=input.value||"", q=norm(raw), token=aliases[q]||q, shown=0;
+    for(var i=0;i<cards.length;i++){
+      var ok=!token || (cards[i].getAttribute("data-search")||"").indexOf(token)!==-1;
+      cards[i].style.display=ok?"":"none";
+      if(ok)shown++;
+    }
+    count.textContent=shown+(shown===1?" raga":" ragas")+(raw?" found":"");
+    none.style.display=shown?"none":"block";
+    clear.style.display=raw?"block":"none";
+  }
+
+  input.addEventListener("input",filter,false);
+  input.addEventListener("keyup",filter,false);
+  input.addEventListener("change",filter,false);
+  input.addEventListener("search",filter,false);
+  clear.addEventListener("click",function(){
+    input.value="";filter();input.focus();
+  },false);
+  filter();
+})();
+</script>
+
+<div class="launch-note">
+  <div style="padding:15px 16px;border-radius:16px;background:linear-gradient(135deg,#fff8ef,#f7effa);border:1px solid rgba(112,41,76,.12);color:#625963;font-size:.84rem;line-height:1.5;">
+    <strong style="color:#70294c;">🎤 Video ordering &amp; duplicate cleanup:</strong>
+    videos are shown oldest → newest using the concert/event date when available, otherwise the YouTube upload date.
+    When the <strong>same song + same raga + same concert date</strong> appears more than once, the
+    <strong>longest recording is retained</strong>. Different concert dates/events are kept separately.
+  </div>
+</div>
+</body>
+</html>
